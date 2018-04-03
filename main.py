@@ -1,4 +1,6 @@
 from math import sqrt
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatch
 
 
 class Quadratic:
@@ -68,14 +70,30 @@ class Quadratic:
         y = self.c - (x**2 * self.a)
         return u'f(x) = %+.2f(x%+.2f)\u00b2%+.2f'.encode('UTF-8') % (self.a, round(x, 3), round(y, 3))
 
+    def graph(self, x_range=[-10, 11]):
+        x = [i for i in range(x_range[0], x_range[1])]
+        y = [((self.a * (i**2)) + (self.b * i) + self.c) for i in x]
+        plt.plot(x, y,)
+        vertex = self.vertex()
+        x_ints = self.x_intercepts() if self.has_x_intercept() else None
+        l = []
+        l.append(mpatch.Patch(label="Vertex "+str(vertex)))
+        l.append(mpatch.Patch(label="Y Intercept "+str(self.y_int)))
+        if x_ints is not None:
+            l.append(mpatch.Patch(label="X Intercepts "+str(x_ints)))
+        plt.grid()
+        plt.legend(handles=l)
+        plt.savefig('graph.png', bbox_inches='tight')
+
 
 if __name__ == '__main__':
     q = Quadratic(5, 25, 30)
-    print(q)
-    print(q.y_int)
-    print(q.has_x_intercept())
-    print(q.x_intercepts())
-    print(q.is_factorable())
-    print(q.factored_form())
-    print(q.vertex())
-    print(q.vertex_form())
+    # print(q)
+    # print(q.y_int)
+    # print(q.has_x_intercept())
+    # print(q.x_intercepts())
+    # print(q.is_factorable())
+    # print(q.factored_form())
+    # print(q.vertex())
+    # print(q.vertex_form())
+    q.graph()
