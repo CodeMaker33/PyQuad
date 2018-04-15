@@ -20,10 +20,13 @@ def graph(quad):
 
 def evaluation(quad):
     while True:
-        x = raw_input('Input x (q to Quit):\n> ')
-        if x.lower() == 'q':
-            break
-        print('f({}) = {}'.format(x, quad.evaluate(float(x))))
+        try:
+            x = raw_input('Input x (q to Quit):\n> ')
+            if x.lower() == 'q':
+                break
+            print('f({}) = {}'.format(x, quad.evaluate(float(x))))
+        except:
+            print('Something went wrong, try again.')
 
 
 def main():
