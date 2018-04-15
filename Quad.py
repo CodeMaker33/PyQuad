@@ -1,11 +1,12 @@
 from math import sqrt
-import matplotlib.pyplot as plt
-import matplotlib.patches as mpatch
 from numpy import linspace as ls
 
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatch
 
-class Quadratic:
-    '''
+
+class Quadratic(object):
+    """
     This is a Quadratic function class that takes a quadratic equation in standard form
     and returns anything that you might want.
 
@@ -20,7 +21,7 @@ class Quadratic:
     (-2.5, -1.25)
     >>> q.factored_form()
     f(x) = 5(x+2)(x+3)
-    '''
+    """
 
     def __init__(self, a, b, c):
         self.a = float(a)
@@ -31,7 +32,7 @@ class Quadratic:
 
     def __repr__(self, encode=True):
         """
-        Python2 doesn't have native unicode support so I
+        Python2 doesn't have default unicode support so I
         have added the encode method but matplotlib doesn't need the encode method
         so I made a default parameter and enter False when I'm using this for matplotlib
         """
@@ -61,15 +62,31 @@ class Quadratic:
             else:
                 return u'f(x) = %dx\u00b2%+dx%+d' % (self.a, self.b, self.c)
 
+    @staticmethod
+    def __is_square(num):
+        """
+        Checks if number is a perfect square.
+        I'm adding 0.5 to root because you can never rely on exact comparisons
+        when dealing with float numbers.
+        Maybe sqrt(49) evaluates to 6.99999 or 7.00001
+        so taking the square of the int right off isn't going to work.
+        we add 0.5 and then take int() to ensure we have what we want.
+        """
+        root = sqrt(num)
+        if int(root + 0.5) ** 2 == num:
+            return True
+        else:
+            return False
+
     def has_x_intercept(self):
         """
         According to a mathematical rule:
         1. If the discriminant of a quadratic function is greater than 0,
-        the vertex is below 0, therefore the graph has 2 x-intercepts.
+        the vertex is below x axis, therefore the graph has 2 x-intercepts.
         2. If the discriminant of a quadratic function is equal to 0,
-        the vertex is on 0, therefore the graph has 1 x-intercept.
+        the vertex is on x axis, therefore the graph has 1 x-intercept.
         3. If the discriminant of a quadratic function is less than 0,
-        the vertex is above 0, therefore the graph doesn't have x-intercepts.
+        the vertex is above x axis, therefore the graph doesn't have x-intercepts.
         """
         if self.discriminant > 0:
             return 2
@@ -91,22 +108,7 @@ class Quadratic:
         else:
             x1 = (-self.b + sqrt(self.discriminant)) / (2 * self.a)
             x2 = (-self.b - sqrt(self.discriminant)) / (2 * self.a)
-            return x1, x2
-
-    def is_square(self, num):
-        """
-        Checks if number is a perfect square.
-        I'm adding 0.5 to root because you can never rely on exact comparisons
-        when dealing with float numbers.
-        Maybe sqrt(49) evaluates to 6.99999 or 7.00001
-        so taking the square of the int right off isn't going to work.
-        we add 0.5 and then take int() to ensure we have what we want.
-        """
-        root = sqrt(num)
-        if int(root + 0.5) ** 2 == num:
-            return True
-        else:
-            return False
+            return round(x1, 3), round(x2, 3)
 
     def is_factorable(self):
         """
@@ -116,14 +118,21 @@ class Quadratic:
         """
         if self.b == 0 and self.c == 0:
             return False
-        elif self.is_square(self.discriminant):
+        elif self.discriminant < 0:
+            return False
+        elif self.__is_square(self.discriminant):
             return True
         else:
             return False
 
     def factored_form(self):
         """
-
+        In order to find the factored form, we need the a value
+        which is obtained by looking at one of the x-intercepts.
+        getting the distance from the x of the vertex and checking
+        where it normally would end up with a value of a (by squaring it).
+        Then we divide that by the y of the vertex and get the a value.
+        The other two factors are easily obtained from the x-intercepts.
         """
         if self.is_factorable():
             x_ints = self.x_intercepts()
@@ -156,8 +165,9 @@ class Quadratic:
             f(x) = -4(x + 4)^2 + 70
 
         From this final equation we can get the vertex which is (-4, 70)
-        In other words, the x of the vertex is half of b
-        and the y of the vertex is half of b squared times a, subtracted from c
+        To only get the vertex, we don't need to go through all of the steps.
+        We only need half of the second coefficient for the x of the vertex.
+        The y of the vertex is half of the second coefficient squared times a, subtracted from c.
         """
         x = (self.b / self.a) / 2
         x = -x if not x == 0 else 0
@@ -175,7 +185,13 @@ class Quadratic:
         y = self.c - (x ** 2 * self.a)
         return u'f(x) = %.2f(x%+.2f)\u00b2%+.2f'.encode('UTF-8') % (self.a, round(x, 3), round(y, 3))
 
-    def graph(self, x_range=[], vector=False):
+    def evaluate(self, x):
+        """
+        Returns y value for any given x
+        """
+        return self.a * (x**2) + self.b * x + self.c
+
+    def graph(self, x_range=None, vector=False):
         """
         This function uses matplotlib to graph the function.
         If no range is given, it takes the x of the vertex and
@@ -189,7 +205,8 @@ class Quadratic:
 
         It also adds the equation, the x and y intercepts and the vertex as labels.
 
-        It saves the graph as "graph.png" into the same directory.
+        It saves the graph as "graph.png" into the same directory by default.
+        If the vector option is on, it saves as a vector image "graph.pdf".
         """
         vertex = self.vertex()
         if x_range:
@@ -197,29 +214,18 @@ class Quadratic:
         else:
             x = ls(vertex[0] - 5, vertex[0] + 5)
         y = [((self.a * (i ** 2)) + (self.b * i) + self.c) for i in x]
-        plt.plot(x, y, )
+        plt.plot(x, y)
         x_ints = self.x_intercepts() if self.has_x_intercept() else None
-        patches = [mpatch.Patch(color='black', label=q.__repr__(False)),
+
+        patches = [mpatch.Patch(color='black', label=self.__repr__(False)),
                    mpatch.Patch(color='red', label="Vertex " + str(vertex)),
                    mpatch.Patch(color='blue', label="Y Intercept " + str(self.y_int))]
         if x_ints is not None:
             patches.append(mpatch.Patch(color='orange', label="X Intercept(s) " + str(x_ints)))
+
         plt.grid()
         plt.legend(handles=patches)
         if vector:
             plt.savefig('graph.pdf', bbox_inches='tight')
         else:
             plt.savefig('graph.png', bbox_inches='tight')
-
-
-if __name__ == '__main__':
-    q = Quadratic(5, 25, 30)
-    print(q)
-    print(q.y_int)
-    print(q.has_x_intercept())
-    print(q.x_intercepts())
-    print(q.is_factorable())
-    print(q.factored_form())
-    print(q.vertex())
-    print(q.vertex_form())
-    q.graph(vector=True, x_range=[q.vertex()[0], 10])
