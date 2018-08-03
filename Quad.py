@@ -53,9 +53,9 @@ class Quadratic(object):
                 return u'f(x) = %dx\u00b2%+d' % (self.a, self.c)
         elif self.c == 0:
             if encode:
-                return u'f(x) = %d\u00b2%+dx'.encode('UTF-8') % (self.a, self.b)
+                return u'f(x) = %dx\u00b2%+dx'.encode('UTF-8') % (self.a, self.b)
             else:
-                return u'f(x) = %d\u00b2%+dx' % (self.a, self.b)
+                return u'f(x) = %dx\u00b2%+dx' % (self.a, self.b)
         else:
             if encode:
                 return u'f(x) = %dx\u00b2%+dx%+d'.encode('UTF-8') % (self.a, self.b, self.c)
@@ -176,8 +176,8 @@ class Quadratic(object):
 
     def vertex_form(self):
         """
-        I've explained how to convert into vertex form above.
-        This function goes the extra step of printing it in proper vertex form.
+        This function gets the vertex and goes the extra step of printing
+        the function in proper vertex form.
         """
         if self.b == 0 and self.c == 0:
             return u'f(x) = %dx\u00b2'.encode('UTF-8') % self.a
