@@ -104,7 +104,7 @@ class Quadratic(object):
         if self.has_x_intercept() == 0:
             return None
         elif self.has_x_intercept() == 1:
-            return self.vertex()
+            return (self.vertex()[0],)
         else:
             x1 = (-self.b + sqrt(self.discriminant)) / (2 * self.a)
             x2 = (-self.b - sqrt(self.discriminant)) / (2 * self.a)
@@ -116,14 +116,9 @@ class Quadratic(object):
         If the discriminant of a quadratic function is a perfect square,
         the equation is factorable.
         """
-        if self.b == 0 and self.c == 0:
-            return False
-        elif self.discriminant < 0:
-            return False
-        elif self.__is_square(self.discriminant):
+        if self.__is_square(self.discriminant):
             return True
-        else:
-            return False
+        return False
 
     def factored_form(self):
         """
