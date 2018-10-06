@@ -116,6 +116,8 @@ class Quadratic(object):
         If the discriminant of a quadratic function is a perfect square,
         the equation is factorable.
         """
+        if self.discriminant < 0:
+            return False
         if self.__is_square(self.discriminant):
             return True
         return False
