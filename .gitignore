@@ -1,3 +1,2 @@
-.idea
-*.iml
-*.pyc
+/env/
+Quad.pyc
