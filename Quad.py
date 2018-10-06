@@ -122,17 +122,35 @@ class Quadratic(object):
 
     def factored_form(self):
         """
-        In order to find the factored form, we need the a value
-        which is obtained by looking at one of the x-intercepts.
-        getting the distance from the x of the vertex and checking
-        where it normally would end up with a value of a (by squaring it).
-        Then we divide that by the y of the vertex and get the a value.
-        The other two factors are easily obtained from the x-intercepts.
+        In order to find the factored form, we need to find the value
+        of a, which is the vertical stretch coefficient. We can do that
+        by evaluating an x point at a certain distance from the vertex,
+        then we divide it by the value it would have in an x^2 graph.
+        The other factors are easily obtained from the x intercepts.
+        EXAMPLE:
+        f(x) = 2x^2 + 4x + 2
+        vertex = (-1, 0)
+ 
+        evaluate f(0) = 2
+        k) x distance from vertex-x = 1
+        k) y distance from vertex-y = 2
+ 
+        f(1) in an x^2 graph = 1
+        h) x distance from vertex-x = 1
+        h) y distance from vertex-y = 1
+ 
+        a = k)dist-y / h)dist-y = 2 / 1 = 2
+ 
+        Remaining factors:
+        (x + (-x_int 1)) * (x + (-x_int 2))
         """
         if self.is_factorable():
             x_ints = self.x_intercepts()
             vertex = self.vertex()
-            a = -vertex[1] / ((max(x_ints) - vertex[0]) ** 2)
+            if len(x_ints) == 1:
+                a = self.evaluate(0) / ((0 - x_ints[0]) ** 2)
+                return u'f(x) = %d(x%+d)\u00b2'.encode('UTF-8') % (a, -x_ints[0])
+            a = self.evaluate(max(x_ints)) - vertex[1] / ((max(x_ints) - vertex[0]) ** 2)
             return u'f(x) = %d(x%+d)(x%+d)'.encode('UTF-8') % (a, -x_ints[0], -x_ints[1])
         else:
             return None
