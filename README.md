@@ -46,7 +46,7 @@ Each coefficient can be accessed by calling it's respective conventional variabl
 - evaluate(x): Returns the y value for any given x.
 - graph(xrange, vector): Graphs the formula within the given xrange (default is 5 units on each side of the vertex point) as a png image or a pdf if the vector argument is `True`. The graph is saved in the same directory as Quad.py.
 ## Author
-[Khachig Ainteblian](https://github.com/CodeMaker33) - Sole author
+[Khachig Ainteblian](https://github.com/Khachig) - Sole author
 ## License
 MIT License. *Copyright (C) 2018 Khachig Ainteblian.*
 
